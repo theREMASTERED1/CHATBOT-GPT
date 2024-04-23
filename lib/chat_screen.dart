@@ -72,22 +72,50 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildTextComposer() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: _controller,
-            onSubmitted: (value) => _sendMessage(),
-            decoration: const InputDecoration.collapsed(
-                hintText: "Question/description"),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      height: 80.0,
+      child: Row(
+        children: [
+          Flexible(
+            child: Container(
+              height: 50.0,
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(25.0),
+                boxShadow: const [
+                  BoxShadow(
+                    offset: Offset(0, 3),
+                    blurRadius: 5,
+                    color: Colors.grey,
+                  ),
+                ],
+              ),
+              child: Container(
+                alignment: Alignment.center,
+                child: TextField(
+                  maxLines: null,
+                  controller: _controller,
+                  onSubmitted: (value) => _sendMessage(),
+                  decoration: InputDecoration.collapsed(
+                    hintText: "Type a message",
+                    hintStyle: TextStyle(color: Colors.grey[600]),
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.send),
-          onPressed: _sendMessage,
-        ),
-      ],
-    ).px16();
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: IconButton(
+              icon: const Icon(Icons.send, color: Colors.blue),
+              onPressed: _sendMessage,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
