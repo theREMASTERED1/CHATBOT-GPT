@@ -14,34 +14,42 @@ class ChatMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(sender)
-            .text
-            .subtitle1(context)
-            .make()
-            .box
-            .color(sender == "user" ? Vx.red200 : Vx.green200)
-            .p16
-            .rounded
-            .alignCenter
-            .makeCentered(),
-        Expanded(
-          child: isImage
-              ? AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Image.network(
-                    text,
-                    loadingBuilder: (context, child, loadingProgress) =>
-                        loadingProgress == null
-                            ? child
-                            : const CircularProgressIndicator.adaptive(),
-                  ),
-                )
-              : text.trim().text.bodyText1(context).make().px8(),
-        ),
-      ],
-    ).py8();
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            margin: const EdgeInsets.only(right: 16.0),
+            child: CircleAvatar(child: Text(sender[0])),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(sender,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                Container(
+                  margin: const EdgeInsets.only(top: 5.0),
+                  child: isImage
+                      ? AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: Image.network(
+                            text,
+                            loadingBuilder: (context, child, loadingProgress) =>
+                                loadingProgress == null
+                                    ? child
+                                    : const CircularProgressIndicator
+                                        .adaptive(),
+                          ),
+                        )
+                      : Text(text),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

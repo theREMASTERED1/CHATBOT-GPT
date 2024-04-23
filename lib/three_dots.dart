@@ -49,6 +49,10 @@ class ThreeDotsState extends State<ThreeDots>
               child: const Text(
                 '.',
                 textScaleFactor: 5,
+                style: TextStyle(
+                  fontSize: 24.0,
+                  color: Colors.blue,
+                ),
               ),
             );
           }),

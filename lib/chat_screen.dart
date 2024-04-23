@@ -1,7 +1,6 @@
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:chat_gpt_sdk/src/model/openai_model/model_data.dart';
 import 'package:chatbot_gpt/chat_message.dart';
-import 'package:chatbot_gpt/three_dots.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -17,7 +16,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final List<ChatMessage> _messages = [];
   late OpenAI? chatGPT;
-  bool _isImageSearch = false;
 
   bool _isTyping = false;
 
@@ -33,8 +31,6 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     super.dispose();
   }
-
-  // Link for api - https://beta.openai.com/account/api-keys
 
   void _sendMessage() async {
     if (_controller.text.isEmpty) return;
@@ -52,35 +48,21 @@ class _ChatScreenState extends State<ChatScreen> {
 
     _controller.clear();
 
-    if (_isImageSearch) {
-      // final request = GenerateImage(message.text, 1,
-      //     size: ImageSize.size256, model: GenImgResponse);
+    final request = CompleteText(
+        prompt: message.text,
+        model: ModelFromValue(model: kChatGptTurbo0301Model),
+        maxTokens: 100);
 
-      // final response = await chatGPT!.generateImage(request);
-      // Vx.log(response!.data!.last!.url!);
-      // insertNewData(response.data!.last!.url!, isImage: true);
-    } else {
-      final request = ChatCompleteText(
-        messages: [
-          Map.of({"role": "user", "content": 'Hello!'})
-        ],
-        maxToken: 200,
-        model: ChatModelFromValue(model: kChatGptTurbo),
-        user: "User",
-      );
-
-      final response = await chatGPT!.onChatCompletion(request: request);
-      for (var element in response!.choices) {
-        print("data -> ${element.message?.content}");
-      }
-    }
+    final response = await chatGPT!.onCompletion(request: request);
+    Vx.log(response!.choices[0].text);
+    insertNewData(response.choices[0].text);
   }
 
-  void insertNewData(String response, {bool isImage = false}) {
+  void insertNewData(String response) {
     ChatMessage botMessage = ChatMessage(
       text: response,
       sender: "bot",
-      isImage: isImage,
+      isImage: false,
     );
 
     setState(() {
@@ -100,22 +82,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 hintText: "Question/description"),
           ),
         ),
-        ButtonBar(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.send),
-              onPressed: () {
-                _isImageSearch = false;
-                _sendMessage();
-              },
-            ),
-            TextButton(
-                onPressed: () {
-                  _isImageSearch = true;
-                  _sendMessage();
-                },
-                child: const Text("Generate Image"))
-          ],
+        IconButton(
+          icon: const Icon(Icons.send),
+          onPressed: _sendMessage,
         ),
       ],
     ).px16();
@@ -137,7 +106,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   return _messages[index];
                 },
               )),
-              if (_isTyping) const ThreeDots(),
+              if (_isTyping) const CircularProgressIndicator(),
               const Divider(
                 height: 1.0,
               ),
