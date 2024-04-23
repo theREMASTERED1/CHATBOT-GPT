@@ -1,6 +1,7 @@
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:chat_gpt_sdk/src/model/openai_model/model_data.dart';
 import 'package:chatbot_gpt/chat_message.dart';
+import 'package:chatbot_gpt/three_dots.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -134,7 +135,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   return _messages[index];
                 },
               )),
-              if (_isTyping) const CircularProgressIndicator(),
+              if (_isTyping) const ThreeDots(),
               const Divider(
                 height: 1.0,
               ),
